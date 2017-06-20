@@ -1,4 +1,4 @@
-import HomeScreen from './src/UWCourses';
+import UWCourses from './src/UWCourses';
 
 
 
