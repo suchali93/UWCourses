@@ -4,8 +4,7 @@ const win = Dimensions.get('window');
 
 const Style = StyleSheet.create({
 	rootContainer: {
-		flex: 1,
-		flexDirection: 'column'
+		backgroundColor: 'yellow',
 	},
 	logo: {
 		top: 0,

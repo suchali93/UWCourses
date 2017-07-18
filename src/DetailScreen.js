@@ -8,6 +8,8 @@ import axios from 'axios';
 import ButtonComponent, { CircleButton, RoundButton, RectangleButton } from 'react-native-button-component';
 import Style from './Style';
 
+GLOBAL = require('./Globals');
+
 export default class DetailScreen extends Component {
   static navigationOptions = ({ navigation }) => ({
     title: `Courses offered under ${navigation.state.params.subject}`,
@@ -20,7 +22,7 @@ export default class DetailScreen extends Component {
 			hidden: true,
 			items: [],
 			results: [],
-			posts: []
+			posts: [],
 		};
 	}
 
@@ -35,13 +37,13 @@ export default class DetailScreen extends Component {
 
 	getCourses(callback) {
     const params = this.props.navigation.state.params;
-		var url = 'https://api.uwaterloo.ca/v2/courses/'+params.subject+'.json?key=538288408c8a53b6ae8482fc1b33a01a';
+		var url = GLOBAL.BASE_URL+'courses/'+params.subject+'.json?key='+GLOBAL.KEY;
     axios
 		.get(url)
 		.then(response => {
 			this.setState({
 			  items: response.data.data,
-			  results: response.data.data
+			  results: response.data.data,
 			});
 		}).catch(function(error) {
 			console.log('There has been a problem with your axios.get operation: ' + error.message);

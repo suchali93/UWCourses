@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {
 	AppRegistry,
-	Button,
 	Image,
 	ScrollView,
 	StyleSheet,
@@ -12,11 +11,13 @@ import {
 } from 'react-native';
 import { StackNavigator } from 'react-navigation';
 import axios from 'axios';
+import { Button } from 'react-native-elements';
 import ButtonComponent, { CircleButton, RoundButton, RectangleButton } from 'react-native-button-component';
 import SearchBar from 'react-native-searchbar';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Style from './Style';
 import DetailScreen from './DetailScreen';
+
+GLOBAL = require('./Globals');
 
 class UWCourses extends Component {
 	static navigationOptions = {
@@ -42,13 +43,13 @@ class UWCourses extends Component {
 		this.getSubjects(function(response) {
 		    this.setState({
 		    	items: response.data.data,
-		    	results: response.data.data
+		    	results: response.data.data,
 		    });
 		}.bind(this));
 	}
 
 	getSubjects(callback) {
-		var url = 'https://api.uwaterloo.ca/v2/codes/subjects.json?key=538288408c8a53b6ae8482fc1b33a01a';
+		var url = GLOBAL.BASE_URL+'codes/subjects.json?key='+GLOBAL.KEY;
 		axios
 		.get(url)
 		.then(response => {
@@ -65,19 +66,18 @@ class UWCourses extends Component {
 	render() {
 	 const { navigate } = this.props.navigation;
 	 return (
-		 <View>
+		 <View style={Style.rootContainer}>
 			 <ScrollView>
 				{ this.state.results.map((result, i) => {
 				  return (
-					<ButtonComponent
+					<Button
+						large
+						raised
+						color='black'
+						containerViewStyle={{marginBottom: 5}}
 						key={i}
-						shape='rectangle'
-						backgroundColors={['#90A4AE', '#90A4AE']}
-						gradientStart={{ x: 0.1, y: 1 }}
-						gradientEnd={{ x: 0.9, y: 1 }}
-						text={result.subject.toString()+' - '+result.description.toString()}
-						onPress={() => navigate( 'Details', {subject: result.subject.toString()} ) }>
-					</ButtonComponent>
+						title={result.subject.toString()+' - '+result.description.toString()}
+						onPress={() => navigate( 'Details', {subject: result.subject.toString()} ) } />
 				  );
 				})}
 				</ScrollView>
@@ -145,9 +145,9 @@ class UWCourses extends Component {
 // 	}
 // }
 
-const SimpleApp = StackNavigator({
+const UWApp = StackNavigator({
 	Home: { screen: UWCourses },
 	Details: { screen: DetailScreen },
 });
 
-AppRegistry.registerComponent('UWCourses', () => SimpleApp);
+AppRegistry.registerComponent('UWCourses', () => UWApp);
