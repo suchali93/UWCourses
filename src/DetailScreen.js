@@ -5,6 +5,7 @@ import {
     Text
 } from 'react-native';
 import axios from 'axios';
+import { Button, ButtonGroup } from 'react-native-elements';
 import ButtonComponent, { CircleButton, RoundButton, RectangleButton } from 'react-native-button-component';
 import Style from './Style';
 
@@ -19,18 +20,25 @@ export default class DetailScreen extends Component {
 		super(props);
 		this.state =
 		{
+      selectedIndex: 0,
 			hidden: true,
 			items: [],
-			results: [],
+			courses: [],
+      courseDetails: [],
 			posts: [],
 		};
+    this.updateIndex = this.updateIndex.bind(this);
 	}
+
+  updateIndex (selectedIndex) {
+    this.setState({selectedIndex});
+  }
 
   componentDidMount() {
 		this.getCourses(function(response) {
 		    this.setState({
 		    	items: response.data.data,
-		    	results: response.data.data
+		    	courses: response.data.data,
 		    });
 		}.bind(this));
 	}
@@ -43,33 +51,99 @@ export default class DetailScreen extends Component {
 		.then(response => {
 			this.setState({
 			  items: response.data.data,
-			  results: response.data.data,
+			  courses: response.data.data,
 			});
 		}).catch(function(error) {
-			console.log('There has been a problem with your axios.get operation: ' + error.message);
+			console.log('There has been a problem with your axios.get operation for list of courses: ' + error.message);
 			throw error;
 		});
 	}
 
+  getCourseDetails(courseID) {
+    var url = GLOBAL.BASE_URL+'courses/'+courseID+'.json?key='+GLOBAL.KEY;
+    axios
+    .get(url)
+    .then(response => {
+      this.setState({
+        courseDetails: response.data.data,
+      });
+    }).catch(function(error) {
+      console.log('There has been a problem with your axios.get operation for course details: ' + error.message);
+      throw error;
+    });
+  }
+
   render() {
+    const { selectedIndex } = this.state;
     return (
       <View>
         <ScrollView>
-        { this.state.results.map((result, i) => {
+        { this.state.courses.map((course, i) => {
           return (
-          <ButtonComponent
-            key={i}
-            shape='rectangle'
-            backgroundColors={['#90A4AE', '#90A4AE']}
-            gradientStart={{ x: 0.1, y: 1 }}
-            gradientEnd={{ x: 0.9, y: 1 }}
-            text={result.subject.toString()+' - '+result.catalog_number.toString()}
-            onPress={() => navigate( 'Details', {subject: result.subject.toString()} ) }>
-          </ButtonComponent>
-          );
-        })}
+            <ButtonGroup
+              key={i}
+              onPress={this.updateIndex}
+              selectedIndex={selectedIndex}
+              buttons = { [
+                {
+                  element: () => <Button
+                                  large
+                                  raised
+                                  color='black'
+                                  backgroundColor='white'
+                                  container={{width:50}}
+                                  containerViewStyle={{marginBottom: 1, marginLeft: 0, marginRight: 0}}
+                                  key={i}
+                                  title={course.subject.toString()+' - '+course.catalog_number.toString()}
+                                  onPress={() => navigate( 'Details', {subject: course.subject.toString()} ) }
+                                  />
+                },
+                {
+                  element: () => <Text>F</Text>
+                },
+                {
+                  element: () => <Text>W</Text>
+                },
+                {
+                  element: () => <Text>S</Text>
+                }
+              ] } />
+            );
+          })
+        }
         </ScrollView>
       </View>
     );
+
+    // return (
+    //   <ButtonGroup
+    //     onPress={this.updateIndex}
+    //     selectedIndex={selectedIndex}
+    //     buttons={buttons}
+    //     containerStyle={{height: 100}} />
+    // );
   }
+
+  // render() {
+  //   return (
+  //     <View>
+  //       <ScrollView>
+  //       { this.state.courses.map((course, i) => {
+  //         return (
+  //           <Button
+  // 						large
+  // 						raised
+  // 						color='black'
+  // 						backgroundColor='white'
+  // 						containerViewStyle={{marginBottom: 1, marginLeft: 0, marginRight: 0}}
+  // 						key={i}
+  // 						title={course.subject.toString()+' - '+course.catalog_number.toString()}
+  // 						onPress={() => navigate( 'Details', {subject: course.subject.toString()} ) } />
+  //           );
+  //         })
+  //       }
+  //       </ScrollView>
+  //     </View>
+  //   );
+  // }
 }

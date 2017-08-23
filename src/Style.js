@@ -4,7 +4,7 @@ const win = Dimensions.get('window');
 
 const Style = StyleSheet.create({
 	rootContainer: {
-		backgroundColor: 'yellow',
+		backgroundColor: '#ffffff',
 	},
 	logo: {
 		top: 0,

@@ -29,21 +29,21 @@ class UWCourses extends Component {
 		{
 			hidden: true,
 			items: [],
-			results: [],
+			subjects: [],
 			posts: []
 		};
-		this._handleResults = this._handleResults.bind(this);
+		this._handleResponse = this._handleResponse.bind(this);
 	}
 
-	_handleResults(results) {
-		this.setState({ results });
+	_handleResponse(subjects) {
+		this.setState({ subjects });
 	}
 
 	componentDidMount() {
 		this.getSubjects(function(response) {
 		    this.setState({
 		    	items: response.data.data,
-		    	results: response.data.data,
+		    	subjects: response.data.data,
 		    });
 		}.bind(this));
 	}
@@ -55,10 +55,10 @@ class UWCourses extends Component {
 		.then(response => {
 			this.setState({
 			  items: response.data.data,
-			  results: response.data.data
+			  subjects: response.data.data
 			});
 		}).catch(function(error) {
-			console.log('There has been a problem with your axios.get operation: ' + error.message);
+			console.log('There has been a problem with your axios.get operation for list of subjects: ' + error.message);
 			throw error;
 		});
 	}
@@ -68,16 +68,17 @@ class UWCourses extends Component {
 	 return (
 		 <View style={Style.rootContainer}>
 			 <ScrollView>
-				{ this.state.results.map((result, i) => {
+				{ this.state.subjects.map((subject, i) => {
 				  return (
 					<Button
 						large
 						raised
 						color='black'
-						containerViewStyle={{marginBottom: 5}}
+						backgroundColor='white'
+						containerViewStyle={{marginBottom: 1, marginLeft: 0, marginRight: 0}}
 						key={i}
-						title={result.subject.toString()+' - '+result.description.toString()}
-						onPress={() => navigate( 'Details', {subject: result.subject.toString()} ) } />
+						title={subject.subject.toString()+' - '+subject.description.toString()}
+						onPress={() => navigate( 'Details', {subject: subject.subject.toString()} ) } />
 				  );
 				})}
 				</ScrollView>
@@ -95,7 +96,7 @@ class UWCourses extends Component {
 // 						<SearchBar
 // 							ref={(ref) => this.searchBar = ref}
 // 							data={this.state.items}
-// 							handleResults={this._handleResults}
+// 							handleResponse={this._handleResponse}
 // 							clearOnHide={false}
 // 							hideBack={true}
 // 							allDataOnEmptySearch
@@ -112,7 +113,7 @@ class UWCourses extends Component {
 // 				</View>
 // 					<Image source={require('../img/TODO.png')} style={Style.dataContainer}>
 // 						<ScrollView>
-// 						{ this.state.results.map((result, i) => {
+// 						{ this.state.subjects.map((subject, i) => {
 // 						  return (
 // 							<ButtonComponent
 // 								key={i}
@@ -120,7 +121,7 @@ class UWCourses extends Component {
 // 								backgroundColors={['#90A4AE', '#90A4AE']}
 // 								gradientStart={{ x: 0.1, y: 1 }}
 // 								gradientEnd={{ x: 0.9, y: 1 }}
-// 								text={result.subject.toString()+' - '+result.description.toString()}
+// 								text={subject.subject.toString()+' - '+subject.description.toString()}
 // 								onPress={() => this.searchBar.hide()}>
 // 							</ButtonComponent>
 // 						  );
